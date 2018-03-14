@@ -40,8 +40,8 @@ controllerConfig:
 controllerLeaseTTL: 0
 controllers: '*'
 corsAllowedOrigins:
-- //10\.13\.129\.12:8443$
 - //127\.0\.0\.1(:|$)
+- //192\.168\.1\.101:8443$
 - //localhost(:|$)
 disabledFeatures: null
 dnsConfig:
@@ -53,10 +53,10 @@ etcdClientInfo:
   certFile: master.etcd-client.crt
   keyFile: master.etcd-client.key
   urls:
-  - https://10.13.129.12:4001
+  - https://192.168.1.101:4001
 etcdConfig:
-  address: 10.13.129.12:4001
-  peerAddress: 10.13.129.12:7001
+  address: 192.168.1.101:4001
+  peerAddress: 192.168.1.101:7001
   peerServingInfo:
     bindAddress: 0.0.0.0:7001
     bindNetwork: tcp4
@@ -71,7 +71,7 @@ etcdConfig:
     clientCA: ca.crt
     keyFile: etcd.server.key
     namedCertificates: null
-  storageDirectory: openshift.local.etcd
+  storageDirectory: /home/mrogers/projects/apache-cert-proxy/openshift.local.etcd
 etcdStorageConfig:
   kubernetesStoragePrefix: kubernetes.io
   kubernetesStorageVersion: v1
@@ -119,7 +119,7 @@ kubernetesMasterConfig:
   disabledAPIGroupVersions: {}
   masterCount: 1
   masterEndpointReconcileTTL: 15
-  masterIP: 10.13.129.12
+  masterIP: 192.168.1.101
   podEvictionTimeout: 5m
   proxyClientInfo:
     certFile: master.proxy-client.crt
@@ -142,7 +142,7 @@ masterClients:
     contentType: application/vnd.kubernetes.protobuf
     qps: 300
   openshiftLoopbackKubeConfig: openshift-master.kubeconfig
-masterPublicURL: https://10.13.129.12:8443
+masterPublicURL: https://192.168.1.101:8443
 networkConfig:
   clusterNetworkCIDR: 10.128.0.0/14
   clusterNetworks:
@@ -155,7 +155,7 @@ networkConfig:
   serviceNetworkCIDR: 172.30.0.0/16
 oauthConfig:
   alwaysShowProviderSelection: false
-  assetPublicURL: https://10.13.129.12:8443/console/
+  assetPublicURL: https://192.168.1.101:8443/console/
   grantConfig:
     method: auto
     serviceAccountMethod: prompt
@@ -168,8 +168,8 @@ oauthConfig:
       apiVersion: v1
       kind: AllowAllPasswordIdentityProvider
   masterCA: ca-bundle.crt
-  masterPublicURL: https://10.13.129.12:8443
-  masterURL: https://10.13.129.12:8443
+  masterPublicURL: https://192.168.1.101:8443
+  masterURL: https://192.168.1.101:8443
   sessionConfig:
     sessionMaxAgeSeconds: 300
     sessionName: ssn

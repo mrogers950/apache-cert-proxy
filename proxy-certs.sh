@@ -7,7 +7,7 @@ CERTDIR=${PROJECTDIR}/config
 TODIR=${PROJECTDIR}/certs
 IDFILE=/home/mrogers/vagrant/cent7/.vagrant/machines/default/virtualbox/private_key
 PROXY_IP=192.168.23.11
-MASTER_IP=10.13.129.12
+MASTER_IP=192.168.1.101
 
 while [ "$1" != "" ]; do
 	case "$1" in
@@ -45,12 +45,12 @@ if [ "${nocert}" != "1" ]; then
 	rm -rf ${TODIR}/*.crt
 	rm -rf ${TODIR}/*.key
 	cp ${CERTDIR}/ca.crt ${TODIR}/
+	# copy admin to load into sssd user
+	cp ${CERTDIR}/admin.crt ${TODIR}/
 	cp ${CERTDIR}/frontproxy-ca.crt ${TODIR}/
 	cp ${CERTDIR}/openshift-aggregator.crt ${TODIR}/
 	cat ${CERTDIR}/openshift-aggregator.crt > ${TODIR}/proxy-client.crt
 	cat ${CERTDIR}/openshift-aggregator.key >> ${TODIR}/proxy-client.crt
-	# cat ${CERTDIR}/master.proxy-client.crt > ${TODIR}/proxy-cert-key.crt
-	# cat ${CERTDIR}/master.proxy-client.key >> ${TODIR}/proxy-cert-key.crt
 	oc adm ca create-server-cert --signer-cert=${CERTDIR}/ca.crt --signer-key=${CERTDIR}/ca.key --signer-serial=${CERTDIR}/ca.serial.txt --hostnames="proxy.example.com","${PROXY_IP}" --cert=${TODIR}/cert-proxy-server.crt --key=${TODIR}/cert-proxy-server.key
 	# sudo chown -R mrogers:mrogers ${TODIR}
 	scp -i ${IDFILE} -r ${TODIR} vagrant@${PROXY_IP}:.
@@ -64,6 +64,6 @@ if [ "${nohttp}" != "1" ]; then
 	ssh -i ${IDFILE} vagrant@${PROXY_IP} sudo systemctl restart httpd
 fi
 if [ "${notest}" != "1" ]; then
-	curl -k -E ${CERTDIR}/openshift-aggregator.crt --key ${CERTDIR}/openshift-aggregator.key -X GET -H 'Content-Type: application/json' "https://${PROXY_IP}:443"
+	curl -k -E ${CERTDIR}/admin.crt --key ${CERTDIR}/admin.key -X GET -H 'Content-Type: application/json' "https://${PROXY_IP}:443"
 	ssh -i ${IDFILE} vagrant@${PROXY_IP} sudo cat /var/log/httpd/error_log
 fi
